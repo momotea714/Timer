@@ -1,4 +1,5 @@
 ﻿using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Windows;
 using System.Windows.Threading;
@@ -38,7 +39,7 @@ namespace Timer
             if (RemainingSeconds == 0)
             {
                 Timer.Stop();
-                MessageBox.Show("時間になりました", "", MessageBoxButton.OK, MessageBoxImage.Information);
+                this.ShowMessageAsync("", "時間になりました");
                 InitializeBySetting();
                 SwitchEnabled(true);
             }
