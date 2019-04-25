@@ -1,5 +1,6 @@
 ﻿using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
+using System;
 using System.Windows;
 using Timer.Properties;
 
@@ -91,6 +92,12 @@ namespace Timer
         }
         private void StartTimer()
         {
+            if (!IsValidSetting())
+            {
+                this.ShowMessageAsync("", "時間を設定してください");
+                return;
+            }
+
             TimerController.Start();
             SwitchEnabled(false);
         }
@@ -109,6 +116,13 @@ namespace Timer
         {
             btnReset.IsEnabled = isEnabled;
             btnSetting.IsEnabled = isEnabled;
+        }
+        private bool IsValidSetting()
+        {
+            var s = Settings.Default;
+            var totalSeconds = (int)new TimeSpan(s.Hour, s.Minute, s.Second).TotalSeconds;
+
+            return totalSeconds != 0;
         }
     }
 }
