@@ -14,7 +14,6 @@ namespace Timer
         private ProgressBar DisplayTargetProgressBar { get; }
         private Action FinishAction { get; }
         private int RemainingSeconds { get; set; }
-        private int StartSeconds { get; set; }
 
         public TimerController(Label displayTargetLabel, ProgressBar displayTargetProgressBar, Action finishAction)
         {
@@ -29,16 +28,18 @@ namespace Timer
             Timer.Tick += new EventHandler(Timer_Tick);
         }
 
-        public void InitializeBySetting()
+        public void Initialize()
         {
             var s = Settings.Default;
-            DisplayTargetLabel.Content = $"{s.Hour:00}:{s.Minute:00}:{s.Second:00}";
-            RemainingSeconds = (int)new TimeSpan(s.Hour, s.Minute, s.Second).TotalSeconds;
+            var totalSeconds = (int)new TimeSpan(s.Hour, s.Minute, s.Second).TotalSeconds;
+            RemainingSeconds = totalSeconds;
+            DisplayTargetProgressBar.Maximum = totalSeconds;
+
+            Display();
         }
         public void Start()
         {
             Timer.Start();
-            StartSeconds = RemainingSeconds;
         }
         public void Stop()
         {
@@ -47,7 +48,7 @@ namespace Timer
         public void AddTime(int seconds)
         {
             RemainingSeconds += seconds;
-            StartSeconds += seconds;
+            DisplayTargetProgressBar.Maximum += seconds;
             Display();
         }
 
@@ -55,7 +56,6 @@ namespace Timer
         {
             var remaining = new TimeSpan(0, 0, RemainingSeconds);
             DisplayTargetLabel.Content = $"{remaining.Hours:00}:{remaining.Minutes:00}:{remaining.Seconds:00}";
-            DisplayTargetProgressBar.Maximum = StartSeconds;
             DisplayTargetProgressBar.Value = RemainingSeconds;
         }
         private void Timer_Tick(object sender, EventArgs e)
@@ -66,7 +66,7 @@ namespace Timer
             if (RemainingSeconds == 0)
             {
                 Timer.Stop();
-                InitializeBySetting();
+                Initialize();
                 FinishAction();
             }
         }

@@ -22,7 +22,7 @@ namespace Timer
                 SwitchEnabled(true);
             });
 
-            InitializeBySetting();
+            Initialize();
         }
 
         private void BtnStartStop_Click(object sender, RoutedEventArgs e)
@@ -50,7 +50,7 @@ namespace Timer
 
             if (window.Result == SettingEditResult.Cancel) return;
 
-            InitializeBySetting();
+            Initialize();
 
             if (window.Result == SettingEditResult.Start) StartTimer();
         }
@@ -84,10 +84,10 @@ namespace Timer
             TimerController.AddTime(-10);
         }
 
-        private void InitializeBySetting()
+        private void Initialize()
         {
             Topmost = Settings.Default.Topmost;
-            TimerController.InitializeBySetting();
+            TimerController.Initialize();
         }
         private void StartTimer()
         {
@@ -102,7 +102,7 @@ namespace Timer
         private void ResetTimer()
         {
             TimerController.Stop();
-            TimerController.InitializeBySetting();
+            TimerController.Initialize();
             SwitchEnabled(true);
         }
         private void SwitchEnabled(bool isEnabled)
