@@ -1,8 +1,6 @@
 ﻿using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
-using System;
 using System.Windows;
-using System.Windows.Threading;
 using Timer.Properties;
 
 namespace Timer
@@ -12,60 +10,35 @@ namespace Timer
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
-
-        public DispatcherTimer Timer { get; set; }
-        public int RemainingSeconds { get; set; }
-
-        private int _startSeconds { get; set; }
-
+        private TimerController TimerController { get; }
 
         public MainWindow()
         {
             InitializeComponent();
-            InitializeBySetting();
 
-            Timer = new DispatcherTimer(DispatcherPriority.Normal)
+            TimerController = new TimerController(lblTimer, prgRemainTime, () =>
             {
-                Interval = new TimeSpan(0, 0, 1),
-            };
-            Timer.Tick += new EventHandler(Timer_Tick);
-        }
-
-        private void Timer_Tick(object sender, EventArgs e)
-        {
-            RemainingSeconds--;
-            Display();
-
-            if (RemainingSeconds == 0)
-            {
-                Timer.Stop();
                 this.ShowMessageAsync("", "時間になりました");
-                InitializeBySetting();
                 SwitchEnabled(true);
+            });
+
+            InitializeBySetting();
+        }
+
+        private void BtnStartStop_Click(object sender, RoutedEventArgs e)
+        {
+            if (TimerController.IsEnabled)
+            {
+                StopTimer();
+                return;
             }
-        }
 
-        private void Display()
+            StartTimer();
+        }
+        private void BtnReset_Click(object sender, RoutedEventArgs e)
         {
-            var remaining = new TimeSpan(0, 0, RemainingSeconds);
-            lblTimer.Content = $"{remaining.Hours:00}:{remaining.Minutes:00}:{remaining.Seconds:00}";
-            prgRemainTime.Maximum = _startSeconds;
-            prgRemainTime.Value = RemainingSeconds;
+            ResetTimer();
         }
-
-        private void SwitchEnabled(bool isEnabled)
-        {
-            btnReset.IsEnabled = isEnabled;
-            btnSetting.IsEnabled = isEnabled;
-        }
-
-        private void AddTime(int second)
-        {
-            RemainingSeconds += second;
-            _startSeconds += second;
-            Display();
-        }
-
         private void BtnSetting_Click(object sender, RoutedEventArgs e)
         {
             var window = new SettingWindow()
@@ -81,82 +54,61 @@ namespace Timer
 
             if (window.Result == SettingEditResult.Start) StartTimer();
         }
-        private void BtnStartStop_Click(object sender, RoutedEventArgs e)
+        private void LblTimer_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (Timer.IsEnabled)
-            {
-                StopTimer();
-                return;
-            }
-
-            StartTimer();
+            var isVisible = pnlBtnTimePlus.Visibility == Visibility.Visible;
+            pnlBtnTimePlus.Visibility = isVisible ? Visibility.Collapsed : Visibility.Visible;
         }
-
         private void BtnPlus1H_Click(object sender, RoutedEventArgs e)
         {
-            AddTime(3600);
+            TimerController.AddTime(3600);
         }
-
         private void BtnPlus1M_Click(object sender, RoutedEventArgs e)
         {
-            AddTime(60);
+            TimerController.AddTime(60);
         }
-
         private void BtnPlus10s_Click(object sender, RoutedEventArgs e)
         {
-            AddTime(10);
+            TimerController.AddTime(10);
         }
-
         private void BtnMinus1H_Click(object sender, RoutedEventArgs e)
         {
-            AddTime(-3600);
+            TimerController.AddTime(-3600);
         }
-
         private void BtnMinus1M_Click(object sender, RoutedEventArgs e)
         {
-            AddTime(-60);
+            TimerController.AddTime(-60);
         }
-
         private void BtnMinus10s_Click(object sender, RoutedEventArgs e)
         {
-            AddTime(-10);
-        }
-
-        private void BtnReset_Click(object sender, RoutedEventArgs e)
-        {
-            ResetTimer();
+            TimerController.AddTime(-10);
         }
 
         private void InitializeBySetting()
         {
             Topmost = Settings.Default.Topmost;
-            lblTimer.Content = $"{Settings.Default.Hour:00}:{Settings.Default.Minute:00}:{Settings.Default.Second:00}";
-            RemainingSeconds = (int)new TimeSpan(Settings.Default.Hour, Settings.Default.Minute, Settings.Default.Second).TotalSeconds;
+            TimerController.InitializeBySetting();
         }
         private void StartTimer()
         {
-            Timer.Start();
+            TimerController.Start();
             SwitchEnabled(false);
-            _startSeconds = RemainingSeconds;
         }
         private void StopTimer()
         {
-            Timer.Stop();
+            TimerController.Stop();
             SwitchEnabled(true);
         }
         private void ResetTimer()
         {
-            Timer.Stop();
-            InitializeBySetting();
+            TimerController.Stop();
+            TimerController.InitializeBySetting();
             SwitchEnabled(true);
         }
-
-        private void LblTimer_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void SwitchEnabled(bool isEnabled)
         {
-            if (pnlBtnTimePlus.Visibility == Visibility.Collapsed)
-                pnlBtnTimePlus.Visibility = Visibility.Visible;
-            else
-                pnlBtnTimePlus.Visibility = Visibility.Collapsed;
+            btnReset.IsEnabled = isEnabled;
+            btnSetting.IsEnabled = isEnabled;
         }
     }
 }
