@@ -47,6 +47,9 @@ namespace Timer
         }
         public void AddTime(int seconds)
         {
+            // 負になる場合は処理を行わない
+            if (RemainingSeconds + seconds < 0) return;
+
             RemainingSeconds += seconds;
             DisplayTargetProgressBar.Maximum += seconds;
             Display();
