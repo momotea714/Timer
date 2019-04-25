@@ -121,4 +121,10 @@
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if not exist "$(TargetDir)dll" (mkdir "$(TargetDir)dll")
+
+move "$(TargetDir)*.dll" "$(TargetDir)dll\"
+del *.pdb</PostBuildEvent>
+  </PropertyGroup>
 </Project>
