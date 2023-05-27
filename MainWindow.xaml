@@ -4,13 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:mahApps="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        xmlns:local="clr-namespace:Timer"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Title="タイマー" Height="450" Width="800">
     <Grid Margin="5,5,5,5">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
             <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Grid.ColumnSpan="3">
@@ -19,7 +19,6 @@
                     <Label x:Name="lblTimer" Content="00:00:00" MouseDoubleClick="LblTimer_MouseDoubleClick" />
                 </StackPanel>
             </Viewbox>
-            <ProgressBar Name="prgRemainTime" Minimum="0" Maximum="100" Value="100" Margin="50,-120,50,0" FlowDirection="LeftToRight"/>
             <StackPanel Name="pnlBtnTimePlus" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,-50,0,0" Panel.ZIndex="100" Visibility="Collapsed" >
                 <Button Content="+1h" Margin="50,0,0,0" Name="btnPlus1H" Click="BtnPlus1H_Click" Panel.ZIndex="100" Style="{StaticResource MaterialDesignFloatingActionLightButton}"/>
                 <Button Content="-1h" Margin="10,0,50,0" Name="btnMinus1H" Click="BtnMinus1H_Click" Panel.ZIndex="100" Style="{StaticResource MaterialDesignFloatingActionLightButton}"/>
@@ -30,6 +29,9 @@
             </StackPanel>
         </StackPanel>
         <Grid Grid.Row="1">
+            <ProgressBar Name="prgRemainTime" Minimum="0" Maximum="100" Value="100" Margin="10" FlowDirection="LeftToRight" Background="#FFE5F3FF" BorderBrush="#FFE5F3FF"/>
+        </Grid>
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
