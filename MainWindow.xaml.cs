@@ -26,6 +26,12 @@ namespace Timer
             Initialize();
         }
 
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Settings.Default.WindowHeight = (int)Height;
+            Settings.Default.WindowWidth = (int)Width;
+            Settings.Default.Save();
+        }
         private void BtnStartStop_Click(object sender, RoutedEventArgs e)
         {
             if (TimerController.IsEnabled)
@@ -87,6 +93,8 @@ namespace Timer
 
         private void Initialize()
         {
+            Height = Settings.Default.WindowHeight;
+            Width = Settings.Default.WindowWidth;
             Topmost = Settings.Default.Topmost;
             TimerController.Initialize();
         }
