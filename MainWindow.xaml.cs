@@ -19,7 +19,7 @@ namespace Timer
 
             TimerController = new TimerController(lblTimer, prgRemainTime, () =>
             {
-                this.ShowMessageAsync("", "時間になりました");
+                _ = this.ShowMessageAsync("", "時間になりました");
                 SwitchEnabled(true);
             });
 
@@ -53,13 +53,13 @@ namespace Timer
                 Topmost = Settings.Default.Topmost,
             };
 
-            window.ShowDialog();
+            _ = window.ShowDialog();
 
-            if (window.Result == SettingEditResult.Cancel) return;
+            if (window.Result == SettingEditResult.Cancel) { return; }
 
             Initialize();
 
-            if (window.Result == SettingEditResult.Start) StartTimer();
+            if (window.Result == SettingEditResult.Start) { StartTimer(); }
         }
         private void LblTimer_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
@@ -102,7 +102,7 @@ namespace Timer
         {
             if (!IsValidSetting())
             {
-                this.ShowMessageAsync("", "時間を設定してください");
+                _ = this.ShowMessageAsync("", "時間を設定してください");
                 return;
             }
 
